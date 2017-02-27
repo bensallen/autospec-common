@@ -1,0 +1,18 @@
+REPO_ROOT := /media/sdb1/repos
+AUTOSPEC := python3 ~/autospec/autospec/autospec.py
+
+all: autospec copyrepo
+autospec:
+	$(AUTOSPEC) -n $(PKG_NAME) -t . $(URL)
+copyrepo:
+	find results -name '$(PKG_NAME)*.src.rpm' | xargs -I{} mv {} $(REPO_ROOT)/source/
+	createrepo_c $(REPO_ROOT)/source
+	find results \( -name '$(PKG_NAME)*.x86_64.rpm' -not -name '$(PKG_NAME)*debuginfo*.rpm' \) | xargs -I{} mv {} $(REPO_ROOT)/x86_64/os/
+	createrepo_c $(REPO_ROOT)/x86_64/os
+	find results -name '$(PKG_NAME)*debuginfo*.rpm' | xargs -I{} mv {} $(REPO_ROOT)/x86_64/debug/
+	createrepo_c $(REPO_ROOT)/x86_64/debug
+
+clean:
+	rm -f $(shell basename $(URL))
+	rm -rf results
+	rm -f mock_build.log mock_srpm.log
