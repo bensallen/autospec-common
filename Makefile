@@ -1,9 +1,9 @@
 URL=
 PKG_NAME=
-
+AUTOSPEC=python3 ~/autospec/autospec/autospec.py
 newpkg:
 ifdef PKG_NAME
-	python3 ~/autospec/autospec/autospec.py -n $(PKG_NAME) $(URL)
+	$(AUTOSPEC) -n $(PKG_NAME) $(URL)
 else
-	python3 ~/autospec/autospec/autospec.py $(URL)
+	$(AUTOSPEC) $(URL)
 endif
