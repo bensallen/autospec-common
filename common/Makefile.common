@@ -12,6 +12,13 @@ copyrepo:
 	find results -name '$(PKG_NAME)*debuginfo*.rpm' | xargs -I{} mv {} $(REPO_ROOT)/x86_64/debug/
 	createrepo_c $(REPO_ROOT)/x86_64/debug
 
+newpkg:
+ifdef PKG_NAME
+	$(AUTOSPEC) -n $(PKG_NAME) $(URL)
+else
+	$(AUTOSPEC) $(URL)
+endif
+
 clean:
 	rm -f $(shell basename $(URL))
 	rm -rf results
