@@ -16,7 +16,10 @@ if [ ! -w "${ROOT_PATH}" ]; then
 	exit 1
 fi
 
+sudo swupd bundle-add mixer
+
 if [ ! -e /etc/mock/clear.conf ]; then
+	sudo mkdir -p /etc/mock
 	sudo tee /etc/mock/clear.cfg >/dev/null <<-EOF 
 		config_opts['root'] = 'clear'
 		config_opts['target_arch'] = 'x86_64'
@@ -74,4 +77,6 @@ rm -rf "${TMPDIR}"
 # Setup repo directories
 mkdir -p "${REPOS_PATH}/source" "${REPOS_PATH}/x86_64/os" "${REPOS_PATH}/x86_64/debug"
 
-
+createrepo_c "${REPOS_PATH}/source"
+createrepo_c "${REPOS_PATH}/x86_64/os"
+createrepo_c "${REPOS_PATH}/x86_64/debug"
