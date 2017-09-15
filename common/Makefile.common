@@ -1,9 +1,18 @@
 REPO_ROOT := /media/sdb1/repos
-AUTOSPEC := python3 ~/autospec/autospec/autospec.py
 
-all: autospec copyrepo
-autospec:
-	$(AUTOSPEC) -n $(PKG_NAME) -t . $(URL)
+BUILDCMD := python3 ~/autospec/autospec/autospec.py 
+BUILDARGS := -n $(PKG_NAME) -t . $(URL)
+
+all: build copyrepo
+build:
+
+ifeq ($(BUILDTYPE), mock)
+	mock -r clear --buildsrpm --sources=./ --spec=$(PKG_NAME).spec --uniqueext=$(PKG_NAME) --result=results/ --no-cleanup-after
+	mock -r clear --rebuild --uniqueext=$(PKG_NAME) --result=results/ --no-cleanup-after ./results/$(PKG_NAME)-$(PKG_VERS).src.rpm
+else
+	$(BUILDCMD) $(BUILDARGS)
+endif
+
 copyrepo:
 	find results -name '$(PKG_NAME)*.src.rpm' | xargs -I{} mv {} $(REPO_ROOT)/source/
 	createrepo_c $(REPO_ROOT)/source
@@ -14,9 +23,9 @@ copyrepo:
 
 newpkg:
 ifdef PKG_NAME
-	$(AUTOSPEC) -n $(PKG_NAME) $(URL)
+	$(BUILDCMD) -n $(PKG_NAME) $(URL)
 else
-	$(AUTOSPEC) $(URL)
+	$(BUILDCMD) $(URL)
 endif
 
 clean:
