@@ -68,7 +68,7 @@ mkdir -p "${PKGS_PATH}/common"
 # Generate licenses file
 TMPDIR=$(mktemp -d)
 curl -L https://api.github.com/repos/spdx/license-list/tarball | tar -xz -C "${TMPDIR}" --strip 1
-rm -f "${TMPDIR}/Updating the SPDX Licenses.txt"
+rm -f "${TMPDIR}/Updating the SPDX Licenses.txt" "${TMPDIR}/README.txt"
 
 ( cd "${TMPDIR}" && for lic in *.txt; do sha1sum "${lic}"; done | sed -e 's/  / | /' | sed 's/.txt//' ) > "${PKGS_PATH}/common/licenses"
 
