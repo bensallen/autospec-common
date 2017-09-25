@@ -7,6 +7,7 @@ all: build copyrepo
 build:
 
 ifeq ($(BUILDTYPE), mock)
+	curl -O $(URL)
 	mock -r clear --buildsrpm --sources=./ --spec=$(PKG_NAME).spec --uniqueext=$(PKG_NAME) --result=results/ --no-cleanup-after
 	mock -r clear --rebuild --uniqueext=$(PKG_NAME) --result=results/ --no-cleanup-after ./results/$(PKG_NAME)-$(PKG_VERS).src.rpm
 else
